@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "# 1. install packages:\ndevtools::install_github(\"jvcasillas/untidydata\")\ndevtools::install_github('yihui/xaringan')\n\n# download and install xfun from packages if it does not work.\n\nlibrary(untidydata)\nlibrary(xaringan)\nlibrary(plot3D)\nlibrary(tidyverse)\n\n# 2. Load language_diversity dataset\n# 3. Explore variables, tidy (long to wide)\nstr(language_diversity)\nhead(language_diversity)\nunique(language_diversity$Measurement)\n\nld <- language_diversity %>%\n  filter(., Continent == 'Africa') %>%\n  spread(., key = Measurement, value = Value) %>%\n  select(., country = Country, pop = Population, area = Area, lang = Langs) %>%\n  mutate(., logArea = log(area), logPop = log(pop))\n\n# 4. Check normality, transform, plot\n\nhist(log(ld$area))\nhist(log(ld$pop))\n\nld %>%\n  ggplot(., aes(x = logArea, y = lang)) + \n    geom_point()\n\nld %>%\n  ggplot(., aes(x = logPop, y = lang)) + \n  geom_point()\n\n# Cool text plot\nld %>%\n  ggplot(., aes(x = logPop, y = lang, label = country)) + \n  geom_text()\n\nld %>%\n  ggplot(., aes(x = logPop, y = lang, color = logArea)) +\n  geom_point()\n\n# 5. Fit model (MRC, 3 params)\n\nmy_mod <- lm(lang ~ logPop + logArea, data = ld)\nsummary(my_mod)\n\nmy_int <- lm(lang ~ logPop + logArea, + logPop:logArea, data = ld)\nsummary(my_int)\n\n# lm(lang ~ logPop + logArea, + logPop:logArea, data = ld) ES IGUAL A\n# lm(lang ~ logPop * logArea, data = ld)\n# * means all of the main effects and all of the interactions\n\n# 6. Write up results\n\n# 7. Convert ot an html presentation\n",
+    "created" : 1519748954344.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2448397683",
+    "id" : "511D9EBD",
+    "lastKnownWriteTime" : 1519751401,
+    "last_content_update" : 1519751401220,
+    "path" : "~/Desktop/mrc/scripts/my_script.R",
+    "project_path" : "scripts/my_script.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
